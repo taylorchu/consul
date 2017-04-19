@@ -5,6 +5,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/hashicorp/consul/api"
 	"github.com/hashicorp/consul/consul/structs"
 )
 
@@ -155,11 +156,11 @@ func summarizeServices(dump structs.NodeDump) []*ServiceSummary {
 			}
 			for _, sum := range services {
 				switch check.Status {
-				case structs.HealthPassing:
+				case api.HealthPassing:
 					sum.ChecksPassing++
-				case structs.HealthWarning:
+				case api.HealthWarning:
 					sum.ChecksWarning++
-				case structs.HealthCritical:
+				case api.HealthCritical:
 					sum.ChecksCritical++
 				}
 			}

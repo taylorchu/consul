@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/hashicorp/consul/api"
 	"github.com/hashicorp/consul/consul/structs"
 )
 
@@ -130,7 +131,7 @@ func (s *HTTPServer) HealthServiceNodes(resp http.ResponseWriter, req *http.Requ
 	}
 
 	// Filter to only passing if specified
-	if _, ok := params[structs.HealthPassing]; ok {
+	if _, ok := params[api.HealthPassing]; ok {
 		out.Nodes = filterNonPassing(out.Nodes)
 	}
 
@@ -160,7 +161,7 @@ OUTER:
 	for i := 0; i < n; i++ {
 		node := nodes[i]
 		for _, check := range node.Checks {
-			if check.Status != structs.HealthPassing {
+			if check.Status != api.HealthPassing {
 				nodes[i], nodes[n-1] = nodes[n-1], structs.CheckServiceNode{}
 				n--
 				i--

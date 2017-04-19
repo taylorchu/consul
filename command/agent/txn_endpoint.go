@@ -82,6 +82,11 @@ func fixupKVOps(raw interface{}) error {
 	return nil
 }
 
+// isRead returns true if the given operation does not alter the state store.
+func isRead(op api.KVOp) bool {
+	return op == api.KVGet || op == api.KVGetTree || op == api.KVCheckSession || op == api.KVCheckIndex
+}
+
 // convertOps takes the incoming body in API format and converts it to the
 // internal RPC format. This returns a count of the number of write ops, and
 // a boolean, that if false means an error response has been generated and
@@ -123,8 +128,8 @@ func (s *HTTPServer) convertOps(resp http.ResponseWriter, req *http.Request) (st
 				netKVSize += size
 			}
 
-			verb := structs.KVSOp(in.KV.Verb)
-			if verb.IsWrite() {
+			verb := api.KVOp(in.KV.Verb)
+			if !isRead(verb) {
 				writes += 1
 			}
 
